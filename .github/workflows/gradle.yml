@@ -12,6 +12,9 @@ on:
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
+  schedule:
+    - cron: '30 12 * * 3'
+    - cron: '0 22 * * 5'
 
 permissions:
   contents: read
@@ -21,6 +24,11 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        java: [11, 13, 17]
+    
     steps:
     - uses: actions/checkout@v3
     - name: Set up JDK 11
@@ -32,3 +40,5 @@ jobs:
       uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
       with:
         arguments: build
+    - name: Run tests
+      uses: gradle/gradle-test-action@bd5760595778326ba7f1441bcf7e88b49de61a25
